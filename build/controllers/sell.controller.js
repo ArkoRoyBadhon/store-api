@@ -31,7 +31,7 @@ exports.createSellController = (0, catchAsyncErrors_1.default)((req, res, next) 
             data: null,
         });
     }
-    const { sellData, totalAmount, paymentMethod, paymentStatus, customer, date, status, } = req.body;
+    const { sellData, totalAmount, paymentMethod, paymentStatus, customer } = req.body;
     try {
         const customerExists = yield customer_model_1.default.findById(customer);
         if (!customerExists) {
@@ -43,8 +43,8 @@ exports.createSellController = (0, catchAsyncErrors_1.default)((req, res, next) 
             });
         }
         for (const item of sellData) {
-            const { productId, quantity } = item;
-            const product = yield product_model_1.default.findById(productId);
+            const { id, quantity } = item;
+            const product = yield product_model_1.default.findById(id);
             if (!product) {
                 return (0, sendResponse_1.default)(res, {
                     statusCode: 404,
@@ -73,14 +73,17 @@ exports.createSellController = (0, catchAsyncErrors_1.default)((req, res, next) 
             product.stock -= quantityNumber;
             yield product.save();
         }
+        const sells = sellData.map((sell) => ({
+            productId: sell.id,
+            quantity: parseInt(sell.quantity),
+        }));
         const newSell = yield sell_model_1.default.create({
-            sellData,
+            sellData: sells,
             totalAmount,
             paymentMethod,
             paymentStatus,
             customer,
-            date,
-            status,
+            date: new Date(),
         });
         (0, sendResponse_1.default)(res, {
             statusCode: 201,
@@ -133,7 +136,7 @@ exports.trackCustomerOrder = (0, catchAsyncErrors_1.default)((req, res) => __awa
         return res.status(204).send({});
     const isExistOrder = yield sell_model_1.default.findById(orderId)
         .populate("customer")
-        .populate("productId");
+        .populate("sellData.productId");
     if (!isExistOrder) {
         return (0, sendResponse_1.default)(res, {
             success: false,
@@ -255,7 +258,6 @@ exports.deleteSellController = (0, catchAsyncErrors_1.default)((req, res, next) 
 }));
 exports.getCustomerBasedSellsController = (0, catchAsyncErrors_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userAuth = req.user;
-    console.log("fasdfasd");
     if (!userAuth)
         return res.status(204).send({});
     const isCustomerExist = yield customer_model_1.default.findOne({ email: userAuth.email });

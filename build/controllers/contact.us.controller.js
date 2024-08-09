@@ -37,7 +37,7 @@ exports.createContactMessage = (0, catchAsyncErrors_1.default)((req, res) => __a
   </div>
 </div>`;
     const adminEmail = process.env.MAIL;
-    (0, sendMessage_1.default)(adminEmail, adminEmail, `Reach mail from ${email}`, template);
+    (0, sendMessage_1.default)(email, adminEmail, `Reach mail from ${email}`, template);
     res.json({
         message: "Successfully contact send",
         success: true,

@@ -21,7 +21,6 @@ exports.updateCustomerDetails = (0, catchAsyncErrors_1.default)((req, res) => __
     const user = req.user;
     if (!user)
         return res.status(204).json({});
-    console.log({ user });
     const isExistCustomer = yield customer_model_1.default.findOne({ email: user.email });
     if (!isExistCustomer) {
         return (0, sendResponse_1.default)(res, {

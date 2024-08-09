@@ -30,7 +30,6 @@ exports.createProductController = (0, catchAsyncErrors_1.default)((req, res, nex
         });
     }
     const { name, photo, category, stock, price, discountPrice, brand, service, description, } = req.body;
-    console.log("aaaaaa", req.body);
     try {
         const newProduct = yield product_model_1.default.create({
             name,
