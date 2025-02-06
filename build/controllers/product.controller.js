@@ -98,10 +98,10 @@ exports.getAllProductsController = (0, catchAsyncErrors_1.default)((req, res, ne
 exports.getProductByIdController = (0, catchAsyncErrors_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const product = yield product_model_1.default.findById(id).populate("category", [
-            "label",
-            "value",
-        ]);
+        const product = yield product_model_1.default.findById(id)
+            .populate("category", ["label", "value"])
+            .populate("brand")
+            .populate("tag");
         if (!product) {
             return (0, sendResponse_1.default)(res, {
                 statusCode: 404,
