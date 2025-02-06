@@ -31,8 +31,6 @@ export const createProductController = catchAsyncError(
       description,
     } = req.body;
 
-    
-
     try {
       const newProduct = await Product.create({
         name,
@@ -111,10 +109,10 @@ export const getProductByIdController = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const product = await Product.findById(id).populate("category", [
-        "label",
-        "value",
-      ]);
+      const product = await Product.findById(id)
+        .populate("category", ["label", "value"])
+        .populate("brand")
+        .populate("tag");
 
       if (!product) {
         return sendResponse(res, {

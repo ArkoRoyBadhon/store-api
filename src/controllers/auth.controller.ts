@@ -59,7 +59,6 @@ export const genereteAccessToken = catchAsyncError(async (req, res) => {
     return res.status(400).json({ msg: "Invalid Authentication." });
 
   const refreshToken = getToken.split(" ")[1];
-  console.log({ refreshToken });
 
   const refreshTokenSecret = process.env.JWT_REFRESH_SECRET as string;
 
@@ -117,6 +116,7 @@ export const createStaffController = catchAsyncError(async (req, res) => {
 export const loginController = catchAsyncError(async (req, res) => {
   const { email, password } = req.body;
   const isExistUser = await Authentication.findOne({ email });
+  
   if (!isExistUser) {
     return sendResponse(res, {
       success: false,
